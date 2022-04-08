@@ -17,10 +17,15 @@ answer = random.choice(wordList)
 #print(answer)
 displayList = [""] * 5
 
+history = []
 
 def letterFinder(wordInput):
-    global guesses
-    global gameEnd
+    global guesses, gameEnd, history
+
+    if wordInput in history:
+        return
+    else:
+        history.append(wordInput)
 
     for i in range(0, len(wordInput)):
 
