@@ -22,10 +22,10 @@ history = []
 def letterFinder(wordInput):
     global guesses, gameEnd, history
 
-    if wordInput in history:
+    if wordInput in history: # Checks to see if user has repeated an input
         return
     else:
-        history.append(wordInput)
+        history.append(wordInput) # Stores a list of all entered words for session
 
     for i in range(0, len(wordInput)):
 
@@ -61,10 +61,17 @@ def guessFunct():
 gameEnd = False
 guesses = 0
 
+print(("*" * 16) +"\nUNLIMITED WORDLE\n" + ("*" * 16) + "\n")
+
 while gameEnd == False:
-    wordInput = guessFunct()
+    wordInput = guessFunct().lower()
     #gameEnd = letterFinder(wordInput)
-    letterFinder(wordInput.lower())
+
+    if wordInput not in wordList: # Checks to see if word is in dictionary
+        print("Not in dict :/")
+        None
+    else:
+        letterFinder(wordInput)
 
 #print(grey + "Correctly guessed in:", guesses, "goes!")
 print(grey + f"Correctly guessed in {guesses} goes!") if guesses > 1 else print(grey + f"Correctly guessed in {guesses} go!")
