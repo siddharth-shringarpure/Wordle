@@ -1,21 +1,24 @@
 import colorama
 import random
 
+CHEATING_MODE = False
+
 
 def initialise_game():
     try:
         with open("5letters.txt", "r") as file:
-            wordList = [word.strip() for word in file]
+            list_of_words = [word.strip() for word in file]
     except FileNotFoundError:
         print("File not found.")
         exit()
 
-    answer = random.choice(wordList)
-    # print(answer)
+    chosen_word = random.choice(list_of_words)
+    print(chosen_word) if CHEATING_MODE else None
+
     displayed_word = [""] * 5  # Format each character of input later on
 
-    history = []
-    return wordList, answer, displayed_word, history
+    word_history = []
+    return list_of_words, chosen_word, displayed_word, word_history
 
 
 # Define colours
@@ -25,18 +28,18 @@ GREY = colorama.Fore.RESET
 YELLOW = colorama.Fore.YELLOW
 
 
-def check_letters(answer, guess_word, displayed_word, history, guesses):
-    if guess_word in history:  # Repeated outputs do not add to number of guesses
-        return False, guesses
+def check_letters(correct_word, guess_word, displayed_word, tried_words, number_of_guesses):
+    if guess_word in tried_words:  # Repeated outputs do not add to number of guesses
+        return False, number_of_guesses
 
-    history.append(guess_word)  # Stores a list of all entered words for session
+    tried_words.append(guess_word)  # Stores a list of all entered words for session
 
     for j in range(0, len(guess_word)):
 
-        if guess_word[j] == answer[j]:
+        if guess_word[j] == correct_word[j]:
             displayed_word[j] = GREEN + guess_word[j]
 
-        elif guess_word[j] in answer:
+        elif guess_word[j] in correct_word:
             displayed_word[j] = YELLOW + guess_word[j]
 
         else:
@@ -45,12 +48,12 @@ def check_letters(answer, guess_word, displayed_word, history, guesses):
     print(*displayed_word)
     # "*" is an unpacking operator; ensures each value from the list is printed on one line
 
-    guesses += 1
+    number_of_guesses += 1
 
-    if guess_word == answer:
-        return True, guesses
+    if guess_word == correct_word:
+        return True, number_of_guesses
 
-    return False, guesses
+    return False, number_of_guesses
 
 
 def get_user_input():
@@ -66,10 +69,10 @@ def get_user_input():
 if __name__ == "__main__":
     print(("*" * 16) + "\nUNLIMITED WORDLE\n" + ("*" * 16) + "\n")
 
-    wordList, answer, displayed_word, history = initialise_game()
+    wordList, answer, formatted_word, history = initialise_game()
 
     gameEnd = False
-    guesses = 0
+    numGuesses = 0
 
     while not gameEnd:
         wordInput = get_user_input().lower()
@@ -77,6 +80,6 @@ if __name__ == "__main__":
         if wordInput not in wordList:  # Checks to see if word is in dictionary
             print("Invalid word, try again :/")
         else:
-            gameEnd, guesses = check_letters(answer, wordInput, displayed_word, history, guesses)
+            gameEnd, numGuesses = check_letters(answer, wordInput, formatted_word, history, numGuesses)
 
-    print(f"{GREY}Correctly guessed in {guesses} goes!") if guesses > 1 else print(f"{GREY}Correctly guessed in 1 go!")
+    print(f"{GREY}Guessed in {numGuesses} goes!") if numGuesses > 1 else print(f"{GREY}Guessed in 1 go!")
