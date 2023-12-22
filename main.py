@@ -29,29 +29,29 @@ GREY = colorama.Fore.RESET
 YELLOW = colorama.Fore.YELLOW
 
 
-def check_letters(correct_word, guess_word, displayed_word, tried_words, number_of_guesses):
-    if guess_word in tried_words:  # Repeated outputs do not add to number of guesses
+def check_letters(correct_word, user_guess, displayed_word, tried_words, number_of_guesses):
+    if user_guess in tried_words:  # Repeated outputs do not add to number of guesses
         return False, number_of_guesses
 
-    tried_words.append(guess_word)  # Stores a list of all entered words for session
+    tried_words.append(user_guess)  # Stores a list of all entered words for session
 
-    for j in range(0, len(guess_word)):
+    for j in range(0, len(user_guess)):
 
-        if guess_word[j] == correct_word[j]:
-            displayed_word[j] = GREEN + guess_word[j]
+        if user_guess[j] == correct_word[j]:
+            displayed_word[j] = GREEN + user_guess[j]
 
-        elif guess_word[j] in correct_word:
-            displayed_word[j] = YELLOW + guess_word[j]
+        elif user_guess[j] in correct_word:
+            displayed_word[j] = YELLOW + user_guess[j]
 
         else:
-            displayed_word[j] = GREY + guess_word[j]
+            displayed_word[j] = GREY + user_guess[j]
 
     print(*displayed_word)
     # "*" is an unpacking operator; ensures each value from the list is printed on one line
 
     number_of_guesses += 1
 
-    if guess_word == correct_word:
+    if user_guess == correct_word:
         return True, number_of_guesses
 
     return False, number_of_guesses
@@ -87,7 +87,9 @@ def get_number_of_guesses():
 
 if __name__ == "__main__":
     divider_length = len(GAME_NAME) * 3
-    print(f"{'*' * divider_length}\n{' ' * int(0.5 * (divider_length - len(GAME_NAME)))}{GAME_NAME}\n{'*' * divider_length}")
+    print(f"{'*' * divider_length}\n"
+          f"{' ' * int(0.5 * (divider_length - len(GAME_NAME)))}"
+          f"{GAME_NAME}\n{'*' * divider_length}")
 
     wordList, answer, formatted_word, history = initialise_game()
 
