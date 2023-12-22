@@ -2,6 +2,7 @@ import colorama
 import random
 
 CHEATING_MODE = False
+GAME_NAME = "WORDLE"
 
 
 def initialise_game():
@@ -58,23 +59,43 @@ def check_letters(correct_word, guess_word, displayed_word, tried_words, number_
 
 def get_user_input():
     while True:
-        guess = input(GREY + "Enter a five letter word: ")
-        if len(guess) != 5:
+        user_input = input(GREY + f"Enter a five letter word ({numGuesses+1} / {maxGuesses}): ")
+        if len(user_input) != 5:
             continue
         else:
             break
-    return guess
+    return user_input
+
+
+def get_number_of_guesses():
+    while True:
+        try:
+            input_guesses = input(GREY + "How many guesses? (press Enter for default: 5, 'inf' for unlimited): ")
+            if not input_guesses:
+                return 5
+            elif input_guesses.lower() == "inf":
+                return float("inf")  # Infinite guesses
+            else:
+                guesses = int(input_guesses)
+                if guesses > 0:
+                    return guesses
+                else:
+                    print("Number of guesses must be greater than 0.")
+        except ValueError:
+            print("Invalid input. Please enter a valid number.")
 
 
 if __name__ == "__main__":
-    print(("*" * 16) + "\nUNLIMITED WORDLE\n" + ("*" * 16) + "\n")
+    divider_length = len(GAME_NAME) * 3
+    print(f"{'*' * divider_length}\n{' ' * int(0.5 * (divider_length - len(GAME_NAME)))}{GAME_NAME}\n{'*' * divider_length}")
 
     wordList, answer, formatted_word, history = initialise_game()
 
     gameEnd = False
     numGuesses = 0
+    maxGuesses = get_number_of_guesses()
 
-    while not gameEnd:
+    while (not gameEnd) and (numGuesses < maxGuesses):
         wordInput = get_user_input().lower()
 
         if wordInput not in wordList:  # Checks to see if word is in dictionary
@@ -82,4 +103,7 @@ if __name__ == "__main__":
         else:
             gameEnd, numGuesses = check_letters(answer, wordInput, formatted_word, history, numGuesses)
 
-    print(f"{GREY}Guessed in {numGuesses} goes!") if numGuesses > 1 else print(f"{GREY}Guessed in 1 go!")
+    if numGuesses >= maxGuesses:
+        print(f"Out of guesses! The correct word was {GREEN}{answer}.")
+    else:
+        print(f"{GREY}Guessed in {numGuesses} goes!") if numGuesses > 1 else print(f"{GREY}Guessed in 1 go!")
